@@ -1,0 +1,9 @@
+{
+    "name": "intervals-coach",
+    "version": "1.0.0",
+    "description": "Sync Intervals.icu data via GitHub Actions to Cloudflare R2",
+    "scripts": {
+      "sync": "node scripts/fetch_intervals.js"
+    },
+    "license": "ISC"
+  }

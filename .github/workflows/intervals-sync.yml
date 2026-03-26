@@ -1,0 +1,84 @@
+name: Sync Intervals.icu Data
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # 매 시간 정각 (UTC 기준)
+  workflow_dispatch:      # 수동 실행 가능
+
+jobs:
+  sync-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch Intervals.icu Data
+        env:
+          INTERVALS_API_KEY: ${{ secrets.INTERVALS_API_KEY }}
+          INTERVALS_ATHLETE_ID: ${{ secrets.INTERVALS_ATHLETE_ID }}
+        run: node scripts/fetch_intervals.js
+
+      - name: Transform Data for AI
+        run: node scripts/transform_data.js
+
+      - name: Ensure prompt.txt for R2 upload
+        run: |
+          if [ ! -f data/prompt.txt ]; then
+            cp data/prompt.example.txt data/prompt.txt
+          fi
+
+      - name: Upload to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ENDPOINT: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+          R2_BUCKET: s3://${{ secrets.R2_BUCKET_NAME }}
+        run: |
+          # Upload CSV files as .txt (ChatGPT compatibility)
+          aws s3 cp data/wellness.txt $R2_BUCKET/wellness.txt \
+            --endpoint-url $R2_ENDPOINT \
+            --content-type text/plain \
+            --cache-control "no-cache, no-store, must-revalidate"
+          
+          aws s3 cp data/activities.txt $R2_BUCKET/activities.txt \
+            --endpoint-url $R2_ENDPOINT \
+            --content-type text/plain \
+            --cache-control "no-cache, no-store, must-revalidate"
+          
+          aws s3 cp data/events.txt $R2_BUCKET/events.txt \
+            --endpoint-url $R2_ENDPOINT \
+            --content-type text/plain \
+            --cache-control "no-cache, no-store, must-revalidate"
+          
+          # Upload summary text
+          aws s3 cp data/summary.txt $R2_BUCKET/summary.txt \
+            --endpoint-url $R2_ENDPOINT \
+            --content-type text/plain \
+            --cache-control "no-cache, no-store, must-revalidate"
+          
+          # Upload prompt
+          aws s3 cp data/prompt.txt $R2_BUCKET/prompt.txt \
+            --endpoint-url $R2_ENDPOINT \
+            --content-type text/plain \
+            --cache-control "no-cache, no-store, must-revalidate"
+
+      - name: Upload AI-ready data as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: intervals-ai-data
+          path: |
+            data/wellness.txt
+            data/activities.txt
+            data/events.txt
+            data/summary.txt
+            data/prompt.txt
+          retention-days: 30
+          if-no-files-found: error
