@@ -22,7 +22,7 @@ HTTPS를 쓰면 URL만 바꾸면 된다.
 
 - `scripts/`
 - `worker/` (단, `worker/.wrangler/`는 복사하지 않음)
-- `.github/workflows/`
+- `.github/workflows/` (동기화는 기본 **수동 실행**; 주기 cron은 Secrets 준비 후 워크플로 YAML에서 옵트인)
 - 루트 `package.json`, `.gitignore`, `LICENSE`, `README.md`
 - `docs/` 전체
 - `data/prompt.example.txt` → 로컬에서는 `data/prompt.txt`로 복사해 쓰되 **커밋하지 않음** (`.gitignore`에 의해 제외)

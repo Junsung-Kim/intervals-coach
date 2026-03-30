@@ -138,7 +138,7 @@ npx wrangler deploy
 ### 7. 첫 동기화 실행
 
 1. fork 저장소 **Actions** 탭에서 **Sync Intervals.icu Data** 워크플로를 연다.
-2. **Run workflow**로 수동 실행하거나, 스케줄(매시 정각 UTC)을 기다린다.
+2. **Run workflow**로 수동 실행한다(템플릿 기본값). 주기 실행(cron)은 GitHub Secrets를 모두 넣은 뒤 [`.github/workflows/intervals-sync.yml`](.github/workflows/intervals-sync.yml)에서 `schedule` 블록 주석을 해제해 옵트인한다.
 3. 성공하면 R2에 `wellness.txt`, `activities.txt`, `events.txt`, `summary.txt`, `prompt.txt`가 올라간다.  
    - `data/prompt.txt`가 없으면 워크플로가 [data/prompt.example.txt](data/prompt.example.txt)를 복사해 업로드한다. 개인 코칭 문구는 로컬에서 `data/prompt.txt`를 만들어 두면 그 내용이 우선한다(git에는 커밋하지 않음).
 

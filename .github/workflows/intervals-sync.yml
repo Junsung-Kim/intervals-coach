@@ -1,9 +1,11 @@
 name: Sync Intervals.icu Data
 
+# 공개 템플릿에는 Secrets가 없으므로 기본은 수동 실행만 둔다.
+# 주기 동기화가 필요하면 fork 저장소에 Secrets를 등록한 뒤 아래 schedule 블록 주석을 해제한다.
 on:
-  schedule:
-    - cron: '0 * * * *'  # 매 시간 정각 (UTC 기준)
-  workflow_dispatch:      # 수동 실행 가능
+  workflow_dispatch:
+  # schedule:
+  #   - cron: '0 * * * *'  # 예: 매시간 정각 UTC
 
 jobs:
   sync-data:

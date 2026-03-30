@@ -30,7 +30,7 @@ flowchart TD
   r2cf[Cloudflare_R2_버킷_API_키]
   wr[wrangler.toml_버킷명_수정]
   deploy[wrangler_deploy]
-  act[Actions_수동_실행_또는_스케줄_대기]
+  act[Actions_수동_실행_cron은_옵트인]
 
   fork --> clone
   clone --> secrets
@@ -75,7 +75,7 @@ sequenceDiagram
 
 ## 5. 로컬에서만 동기화할 때 (선택)
 
-CI 없이 `npm run sync`만 실행하면 `data/*.txt`가 로컬에만 생긴다. R2 업로드는 Actions와 동일하게 AWS CLI `aws s3 cp`로 수동 수행하거나, 워크플로를 `workflow_dispatch`로 돌린다.
+CI 없이 `npm run sync`만 실행하면 `data/*.txt`가 로컬에만 생긴다. R2 업로드는 Actions와 동일하게 AWS CLI `aws s3 cp`로 수동 수행하거나, 워크플로를 `workflow_dispatch`로 돌린다. 주기 실행이 필요하면 Secrets 등록 후 `.github/workflows/intervals-sync.yml`의 `schedule`을 옵트인한다.
 
 ```mermaid
 flowchart LR

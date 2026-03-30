@@ -20,7 +20,7 @@ Claude Code, Cursor 등으로 이 저장소를 처음 열었을 때의 **최소 
 |------|------|
 | `scripts/` | Intervals fetch, 데이터 변환 |
 | `worker/` | Cloudflare Worker 소스·`wrangler.toml` |
-| `.github/workflows/` | 주기 동기화 등 Actions |
+| `.github/workflows/` | R2 업로드 동기화(기본은 수동 실행; cron은 Secrets 설정 후 옵트인) |
 | `docs/` | WORKFLOW, ELIGIBILITY, HANDOFF, `knowledge/` |
 | `data/prompt.example.txt` | LLM용 예시. 실제 `prompt.txt`는 로컬 또는 R2에만 둔다. |
 
